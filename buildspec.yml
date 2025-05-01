@@ -6,28 +6,28 @@ phases:
       python: 3.x
     commands:
       - echo "Installing dependencies"
-      - apt-get update && apt-get install -y git curl
+      - apt-get update
+      - apt-get install -y git curl
 
   pre_build:
     commands:
       - echo "Testing internet access"
-      - curl -I https://github.com || echo "Internet not working"
+      - curl -I https://github.com || echo "Internet access failed"
 
-      - echo "Cloning repo"
+      - echo "Cloning WordPress repo"
       - cd /tmp
       - rm -rf wordpress || true
       - git clone https://github.com/Anas154/wordpress.git
 
   build:
     commands:
-      - echo "Creating tar file"
+      - echo "Creating tar file from /tmp/wordpress/wordpress"
       - cd /tmp/wordpress/wordpress
-      - tar -czf wordpress.tar.gz .
-      - mv wordpress.tar.gz /tmp/
+      - tar -czf /tmp/wordpress.tar.gz .
 
   post_build:
     commands:
-      - echo "Uploading to S3"
+      - echo "Uploading tar file to S3"
       - aws s3 cp /tmp/wordpress.tar.gz s3://build-wordpress28/wordpress.tar.gz
 
 artifacts:
