@@ -4,11 +4,11 @@ phases:
   install:
     runtime-versions:
       python: 3.x
-      docker: 18
     commands:
-      # Installing Git to clone the repository
-      - echo "Installing git"
-      - yum install git -y
+      # Update package list and install git
+      - echo "Updating apt and installing git"
+      - apt-get update
+      - apt-get install -y git
 
   pre_build:
     commands:
@@ -18,21 +18,25 @@ phases:
 
   build:
     commands:
-      # Navigate to the repository directory
+      # Navigate to the WordPress directory
       - echo "Navigating to the wordpress directory"
       - cd wordpress/wordpress
 
-      # Create a tar file of the WordPress directory
+      # Create a tar.gz file
       - echo "Creating tar file"
       - tar -czf wordpress.tar.gz .
 
   post_build:
     commands:
-      # Upload the tar file to the S3 bucket
-      - echo "Uploading tar file to S3"
-      - aws s3 cp wordpress.tar.gz s3://build-wordpress28/wordpress.tar.gz
+      # Move the tar to a known location (since we're deep inside directory)
+      - echo "Moving tar file to /tmp for upload"
+      - mv wordpress.tar.gz /tmp/
+
+      # Upload to S3
+      - echo "Uploading tar file to S3 bucket"
+      - aws s3 cp /tmp/wordpress.tar.gz s3://build-wordpress28/wordpress.tar.gz
 
 artifacts:
   files:
-    - wordpress.tar.gz
+    - /tmp/wordpress.tar.gz
 
