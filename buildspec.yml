@@ -5,35 +5,29 @@ phases:
     runtime-versions:
       python: 3.x
     commands:
-      # Update package list and install git
-      - echo "Updating apt and installing git"
-      - apt-get update
-      - apt-get install -y git
+      - echo "Installing dependencies"
+      - apt-get update && apt-get install -y git curl
 
   pre_build:
     commands:
-      # Clone the GitHub repository
-      - echo "Cloning WordPress repository from GitHub"
+      - echo "Testing internet access"
+      - curl -I https://github.com || echo "Internet not working"
+
+      - echo "Cloning repo"
+      - cd /tmp
+      - rm -rf wordpress || true
       - git clone https://github.com/Anas154/wordpress.git
 
   build:
     commands:
-      # Navigate to the WordPress directory
-      - echo "Navigating to the wordpress directory"
-      - cd wordpress/wordpress
-
-      # Create a tar.gz file
       - echo "Creating tar file"
+      - cd /tmp/wordpress/wordpress
       - tar -czf wordpress.tar.gz .
+      - mv wordpress.tar.gz /tmp/
 
   post_build:
     commands:
-      # Move the tar to a known location (since we're deep inside directory)
-      - echo "Moving tar file to /tmp for upload"
-      - mv wordpress.tar.gz /tmp/
-
-      # Upload to S3
-      - echo "Uploading tar file to S3 bucket"
+      - echo "Uploading to S3"
       - aws s3 cp /tmp/wordpress.tar.gz s3://build-wordpress28/wordpress.tar.gz
 
 artifacts:
