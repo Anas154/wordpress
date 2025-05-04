@@ -21,10 +21,10 @@ phases:
 
   build:
     commands:
-      - echo "Creating deployment package with WordPress + appspec + scripts"
+      - echo "Creating deployment package with WordPress files in root"
       - cd /tmp/wordpress
       - mkdir -p package
-      - cp -r wordpress package/
+      - cp -r wordpress/* package/        # Note: Only contents copied
       - cp appspec.yml package/
       - cp -r scripts package/
       - cd package
