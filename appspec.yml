@@ -16,6 +16,9 @@ hooks:
     - location: scripts/set_permissions.sh
       timeout: 120
       runas: root
+    - location: scripts/configure_wp.sh
+      timeout: 180
+      runas: root
 
   ApplicationStart:
     - location: scripts/restart_apache.sh
