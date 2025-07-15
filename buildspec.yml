@@ -25,13 +25,12 @@ phases:
       - cp wordpress-src/appspec.yml package/
       - cp -r wordpress-src/scripts package/
       - cd package
-      - tar -czf ../wordpress_deploy_package.tar.gz .
+      - tar -czf wordpress_deploy_package.tar.gz .
 
   post_build:
     commands:
-    - echo "Uploading package to S3"
-    - aws s3 cp /tmp/wordpress_deploy_package.tar.gz s3://anas-101/build/wordpress_deploy_package.tar.gz
-
+      - echo "Uploading package to S3"
+      - aws s3 cp wordpress_deploy_package.tar.gz s3://anas-101/wordpress_deploy_package.tar.gz
 
 artifacts:
   files:
