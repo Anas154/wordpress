@@ -5,9 +5,10 @@ phases:
     runtime-versions:
       python: 3.x
     commands:
-      - echo "Installing system dependencies"
-      - yum update -y
-      - yum install -y git curl unzip awscli
+      - echo "Using default dependencies available in CodeBuild image"
+      - git --version
+      - curl --version
+      - aws --version
 
   pre_build:
     commands:
