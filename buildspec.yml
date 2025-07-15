@@ -29,8 +29,9 @@ phases:
 
   post_build:
     commands:
-      - echo "Uploading package to S3"
-      - aws s3 cp ../wordpress_deploy_package.tar.gz s3://build-wordpress28/wordpress_deploy_package.tar.gz
+    - echo "Uploading package to S3"
+    - aws s3 cp /tmp/wordpress_deploy_package.tar.gz s3://anas-101/build/wordpress_deploy_package.tar.gz
+
 
 artifacts:
   files:
