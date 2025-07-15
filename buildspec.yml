@@ -24,8 +24,7 @@ phases:
       - cp -r wordpress-src/wordpress/* package/
       - cp wordpress-src/appspec.yml package/
       - cp -r wordpress-src/scripts package/
-      - cd package
-      - tar -czf wordpress_deploy_package.tar.gz .
+      - tar -czf wordpress_deploy_package.tar.gz -C package .
 
   post_build:
     commands:
