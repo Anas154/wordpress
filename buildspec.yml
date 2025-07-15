@@ -6,36 +6,32 @@ phases:
       python: 3.x
     commands:
       - echo "Installing system dependencies"
-      - apt-get update
-      - apt-get install -y git curl unzip awscli
+      - yum update -y
+      - yum install -y git curl unzip awscli
 
   pre_build:
     commands:
       - echo "Testing internet access"
       - curl -I https://github.com || echo "Internet access failed"
-
       - echo "Cloning WordPress repo"
-      - cd /tmp
-      - rm -rf wordpress || true
-      - git clone https://github.com/Anas154/wordpress.git
+      - git clone https://github.com/Anas154/wordpress.git wordpress-src
 
   build:
     commands:
-      - echo "Creating deployment package with WordPress files in root"
-      - cd /tmp/wordpress
+      - echo "Creating deployment package with WordPress files"
       - mkdir -p package
-      - cp -r wordpress/* package/        # Note: Only contents copied
-      - cp appspec.yml package/
-      - cp -r scripts package/
+      - cp -r wordpress-src/wordpress/* package/
+      - cp wordpress-src/appspec.yml package/
+      - cp -r wordpress-src/scripts package/
       - cd package
-      - tar -czf /tmp/wordpress_deploy_package.tar.gz .
+      - tar -czf ../wordpress_deploy_package.tar.gz .
 
   post_build:
     commands:
-      - echo "Uploading packaged deployment bundle to S3"
-      - aws s3 cp /tmp/wordpress_deploy_package.tar.gz s3://build-wordpress28/wordpress_deploy_package.tar.gz
+      - echo "Uploading package to S3"
+      - aws s3 cp ../wordpress_deploy_package.tar.gz s3://build-wordpress28/wordpress_deploy_package.tar.gz
 
 artifacts:
   files:
-    - /tmp/wordpress_deploy_package.tar.gz
+    - wordpress_deploy_package.tar.gz
 
